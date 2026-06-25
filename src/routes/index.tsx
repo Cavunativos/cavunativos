@@ -134,6 +134,25 @@ function Index() {
   const [open, setOpen] = useState(false);
   const [dbMessages, setDbMessages] = useState<DbMensaje[] | null>(null);
   const [selected, setSelected] = useState<CardMessage | null>(null);
+  const [subEmail, setSubEmail] = useState("");
+  const [subState, setSubState] = useState<"idle" | "loading" | "ok" | "dup" | "err">("idle");
+
+  async function handleSubscribe(e: React.FormEvent) {
+    e.preventDefault();
+    const email = subEmail.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255) {
+      setSubState("err");
+      return;
+    }
+    setSubState("loading");
+    const { error } = await supabase.from("suscriptores").insert({ email });
+    if (error) {
+      setSubState(error.code === "23505" ? "dup" : "err");
+      return;
+    }
+    setSubState("ok");
+    setSubEmail("");
+  }
 
   useEffect(() => {
     supabase
