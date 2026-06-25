@@ -83,17 +83,38 @@ function AdminPage() {
       </header>
 
       <div className="max-w-4xl mx-auto p-6">
-        {!isAdmin && (
-          <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-lg p-4 mb-6 text-sm">
-            <p className="font-medium mb-1">Aún no eres administrador.</p>
-            <p>
-              Para poder publicar mensajes, comparte este ID con tu administrador del proyecto para que te asigne el rol <strong>admin</strong>:
-            </p>
-            <code className="block mt-2 bg-white p-2 rounded border border-amber-200 text-xs break-all">
-              {userId}
-            </code>
+        <div className="bg-white border border-[#e6dcc8] rounded-lg p-4 mb-6">
+          <p className="text-xs uppercase tracking-wide text-stone-500 mb-2">
+            Tu UUID de usuario {isAdmin && <span className="text-[#2d5016] normal-case">· admin ✓</span>}
+          </p>
+          <div className="flex items-stretch gap-2">
+            <input
+              readOnly
+              value={userId}
+              onFocus={(e) => e.currentTarget.select()}
+              className="flex-1 font-mono text-sm bg-[#f5efe4] border border-[#e6dcc8] rounded-md px-3 py-2 text-stone-800 select-all"
+            />
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(userId);
+                  alert("UUID copiado al portapapeles");
+                } catch {
+                  alert(userId);
+                }
+              }}
+              className="px-3 py-2 bg-[#2d5016] text-white rounded-md text-sm hover:bg-[#3d6a1f]"
+            >
+              Copiar
+            </button>
           </div>
-        )}
+          {!isAdmin && (
+            <p className="text-xs text-amber-800 mt-2">
+              Aún no eres administrador. Comparte este UUID para que te asignen el rol <strong>admin</strong>.
+            </p>
+          )}
+        </div>
 
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-serif text-[#2d5016]">Mensajes</h1>
