@@ -28,12 +28,22 @@ const NAV = [
   { href: "#contacto", label: "Contacto" },
 ];
 
-const MESSAGES = [
+type CardMessage = {
+  img: string;
+  cat: string;
+  title: string;
+  excerpt: string;
+  full: string;
+  date: string;
+};
+
+const MESSAGES: CardMessage[] = [
   {
     img: cardFood,
     cat: "Alimentación",
     title: "El desayuno de la selva",
     excerpt: "Plátano maduro asado, casabe y miel silvestre. Energía limpia para empezar el día.",
+    full: "En la selva el desayuno es sagrado. Un plátano maduro asado sobre brasas, una lasca de casabe crujiente y una cucharada de miel silvestre bastan para abrir el día con energía limpia. Sin azúcar refinada, sin prisa, masticando despacio para escuchar al cuerpo. Así comían los abuelos y así sigue siendo el ritual de quienes viven cerca del río.",
     date: "Hoy",
   },
   {
@@ -41,6 +51,7 @@ const MESSAGES = [
     cat: "Pesca",
     title: "Pescar con la luna",
     excerpt: "Los abuelos enseñan que la luna nueva trae los mejores peces al río.",
+    full: "La luna manda en el agua. En luna nueva los peces se acercan a la orilla buscando alimento y la pesca es generosa. En luna llena, en cambio, conviene esperar al amanecer. No es superstición: es observación de generaciones. Pescar es leer el cielo, el viento y la corriente — no solo lanzar el anzuelo.",
     date: "Ayer",
   },
   {
@@ -48,6 +59,7 @@ const MESSAGES = [
     cat: "Saberes",
     title: "Reparar antes que comprar",
     excerpt: "Un cuchillo bien afilado dura tres generaciones. Aquí mi método casero.",
+    full: "Antes de pensar en comprar uno nuevo, afila. Una piedra plana mojada, movimientos suaves y constantes en un solo sentido, y cinco minutos de paciencia. El filo vuelve. Un buen cuchillo bien cuidado pasa de abuelo a nieto. Reparar es también un acto de respeto a la tierra: menos basura, menos consumo, más oficio.",
     date: "Hace 2 días",
   },
 ];
@@ -93,6 +105,7 @@ const DEFAULT_IMAGES = [cardFood, cardFishing, cardCrafts];
 function Index() {
   const [open, setOpen] = useState(false);
   const [dbMessages, setDbMessages] = useState<DbMensaje[] | null>(null);
+  const [selected, setSelected] = useState<CardMessage | null>(null);
 
   useEffect(() => {
     supabase
@@ -104,13 +117,25 @@ function Index() {
       .then(({ data }) => setDbMessages((data as DbMensaje[]) ?? []));
   }, []);
 
-  const messages =
+  useEffect(() => {
+    if (!selected) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSelected(null);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [selected]);
+
+  const messages: CardMessage[] =
     dbMessages && dbMessages.length > 0
       ? dbMessages.map((m, i) => ({
           img: m.imagen_url || DEFAULT_IMAGES[i % DEFAULT_IMAGES.length],
           cat: m.categoria ?? "Mensaje",
           title: m.titulo,
           excerpt: m.contenido.slice(0, 140) + (m.contenido.length > 140 ? "…" : ""),
+          full: m.contenido,
           date: formatDate(m.created_at),
         }))
       : MESSAGES;
@@ -198,7 +223,11 @@ function Index() {
           </div>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {messages.map((m) => (
-              <article key={m.title} className="group overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1">
+              <button
+                key={m.title}
+                onClick={() => setSelected(m)}
+                className="group text-left overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1"
+              >
                 <div className="aspect-[4/3] overflow-hidden">
                   <img src={m.img} alt={m.title} loading="lazy" width={800} height={600} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
@@ -209,11 +238,11 @@ function Index() {
                   </div>
                   <h3 className="mt-3 font-display text-xl font-semibold text-foreground">{m.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{m.excerpt}</p>
-                  <a href="#" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
                     Leer más <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
+                  </span>
                 </div>
-              </article>
+              </button>
             ))}
           </div>
         </div>
@@ -343,6 +372,48 @@ function Index() {
       >
         <MessageCircle className="h-7 w-7" />
       </a>
+
+      {/* Modal de detalle */}
+      {selected && (
+        <div
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-6"
+          onClick={() => setSelected(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="relative w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-card shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelected(null)}
+              aria-label="Cerrar"
+              className="absolute top-4 right-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-background/90 text-foreground backdrop-blur-md shadow-md hover:bg-background"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="aspect-[16/9] overflow-hidden">
+              <img src={selected.img} alt={selected.title} className="h-full w-full object-cover" />
+            </div>
+            <div className="p-6 sm:p-8">
+              <div className="flex items-center justify-between text-xs">
+                <span className="rounded-full bg-secondary px-3 py-1 font-medium text-secondary-foreground">{selected.cat}</span>
+                <span className="text-muted-foreground">{selected.date}</span>
+              </div>
+              <h3 className="mt-4 font-display text-3xl font-semibold text-primary">{selected.title}</h3>
+              <p className="mt-5 whitespace-pre-line text-base leading-relaxed text-foreground/85">
+                {selected.full}
+              </p>
+              <a
+                href={WA_LINK}
+                className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-soft)] transition-transform hover:scale-105"
+              >
+                <MessageCircle className="h-4 w-4" /> Conversar sobre esto
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
