@@ -105,6 +105,7 @@ const DEFAULT_IMAGES = [cardFood, cardFishing, cardCrafts];
 function Index() {
   const [open, setOpen] = useState(false);
   const [dbMessages, setDbMessages] = useState<DbMensaje[] | null>(null);
+  const [selected, setSelected] = useState<CardMessage | null>(null);
 
   useEffect(() => {
     supabase
@@ -116,13 +117,25 @@ function Index() {
       .then(({ data }) => setDbMessages((data as DbMensaje[]) ?? []));
   }, []);
 
-  const messages =
+  useEffect(() => {
+    if (!selected) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSelected(null);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [selected]);
+
+  const messages: CardMessage[] =
     dbMessages && dbMessages.length > 0
       ? dbMessages.map((m, i) => ({
           img: m.imagen_url || DEFAULT_IMAGES[i % DEFAULT_IMAGES.length],
           cat: m.categoria ?? "Mensaje",
           title: m.titulo,
           excerpt: m.contenido.slice(0, 140) + (m.contenido.length > 140 ? "…" : ""),
+          full: m.contenido,
           date: formatDate(m.created_at),
         }))
       : MESSAGES;
