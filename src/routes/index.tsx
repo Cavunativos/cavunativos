@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Leaf, Fish, Apple, Hammer, Sprout, Sparkles, MessageCircle,
   Facebook, Instagram, Youtube, Send, Heart, ArrowRight, Menu, X,
@@ -69,8 +70,50 @@ const SOCIALS = [
   { icon: Send, name: "Telegram", href: "#" },
 ];
 
+type DbMensaje = {
+  id: string;
+  titulo: string;
+  contenido: string;
+  imagen_url: string | null;
+  categoria: string | null;
+  created_at: string;
+};
+
+function formatDate(iso: string) {
+  const d = new Date(iso);
+  const diff = (Date.now() - d.getTime()) / 86400000;
+  if (diff < 1) return "Hoy";
+  if (diff < 2) return "Ayer";
+  if (diff < 7) return `Hace ${Math.floor(diff)} días`;
+  return d.toLocaleDateString();
+}
+
+const DEFAULT_IMAGES = [cardFood, cardFishing, cardCrafts];
+
 function Index() {
   const [open, setOpen] = useState(false);
+  const [dbMessages, setDbMessages] = useState<DbMensaje[] | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("mensajes")
+      .select("*")
+      .eq("publicado", true)
+      .order("created_at", { ascending: false })
+      .limit(6)
+      .then(({ data }) => setDbMessages((data as DbMensaje[]) ?? []));
+  }, []);
+
+  const messages =
+    dbMessages && dbMessages.length > 0
+      ? dbMessages.map((m, i) => ({
+          img: m.imagen_url || DEFAULT_IMAGES[i % DEFAULT_IMAGES.length],
+          cat: m.categoria ?? "Mensaje",
+          title: m.titulo,
+          excerpt: m.contenido.slice(0, 140) + (m.contenido.length > 140 ? "…" : ""),
+          date: formatDate(m.created_at),
+        }))
+      : MESSAGES;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -154,7 +197,7 @@ function Index() {
             </p>
           </div>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {MESSAGES.map((m) => (
+            {messages.map((m) => (
               <article key={m.title} className="group overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1">
                 <div className="aspect-[4/3] overflow-hidden">
                   <img src={m.img} alt={m.title} loading="lazy" width={800} height={600} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
