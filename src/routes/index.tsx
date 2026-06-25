@@ -345,6 +345,48 @@ function Index() {
         </div>
       </section>
 
+      {/* Suscripción por correo */}
+      <section className="py-24">
+        <div className="mx-auto max-w-3xl px-6 text-center">
+          <span className="text-xs font-semibold uppercase tracking-widest text-leaf">Boletín</span>
+          <h2 className="mt-3 font-display text-4xl font-semibold text-primary sm:text-5xl">
+            Recibe los mensajes en tu correo
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
+            Saberes, recetas y consejos de la selva, directo a tu bandeja. Sin spam, solo lo esencial.
+          </p>
+          <form onSubmit={handleSubscribe} className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
+            <input
+              type="email"
+              required
+              maxLength={255}
+              value={subEmail}
+              onChange={(e) => setSubEmail(e.target.value)}
+              placeholder="tu@correo.com"
+              className="flex-1 rounded-full border border-border bg-card px-5 py-3 text-sm outline-none focus:border-primary"
+              aria-label="Correo electrónico"
+            />
+            <button
+              type="submit"
+              disabled={subState === "loading"}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-transform hover:scale-105 disabled:opacity-60"
+            >
+              {subState === "loading" ? "Enviando..." : "Suscribirme"}
+              <Send className="h-4 w-4" />
+            </button>
+          </form>
+          {subState === "ok" && (
+            <p className="mt-4 text-sm font-medium text-leaf">¡Listo! Te avisaremos cuando haya novedades.</p>
+          )}
+          {subState === "dup" && (
+            <p className="mt-4 text-sm text-muted-foreground">Este correo ya está suscrito. ¡Gracias!</p>
+          )}
+          {subState === "err" && (
+            <p className="mt-4 text-sm text-destructive">Hubo un problema. Revisa el correo e intenta de nuevo.</p>
+          )}
+        </div>
+      </section>
+
       {/* Patrocinantes + Apoyo */}
       <section className="bg-secondary/40 py-24">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 md:grid-cols-2">
