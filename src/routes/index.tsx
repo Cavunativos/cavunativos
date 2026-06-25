@@ -372,6 +372,48 @@ function Index() {
       >
         <MessageCircle className="h-7 w-7" />
       </a>
+
+      {/* Modal de detalle */}
+      {selected && (
+        <div
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-6"
+          onClick={() => setSelected(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="relative w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-card shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelected(null)}
+              aria-label="Cerrar"
+              className="absolute top-4 right-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-background/90 text-foreground backdrop-blur-md shadow-md hover:bg-background"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="aspect-[16/9] overflow-hidden">
+              <img src={selected.img} alt={selected.title} className="h-full w-full object-cover" />
+            </div>
+            <div className="p-6 sm:p-8">
+              <div className="flex items-center justify-between text-xs">
+                <span className="rounded-full bg-secondary px-3 py-1 font-medium text-secondary-foreground">{selected.cat}</span>
+                <span className="text-muted-foreground">{selected.date}</span>
+              </div>
+              <h3 className="mt-4 font-display text-3xl font-semibold text-primary">{selected.title}</h3>
+              <p className="mt-5 whitespace-pre-line text-base leading-relaxed text-foreground/85">
+                {selected.full}
+              </p>
+              <a
+                href={WA_LINK}
+                className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-soft)] transition-transform hover:scale-105"
+              >
+                <MessageCircle className="h-4 w-4" /> Conversar sobre esto
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
