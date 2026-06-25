@@ -14,6 +14,34 @@ import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title: "Cavunativos — Vive simple, vive sano, vive conectado" },
+      { name: "description", content: "Mensajes y saberes ancestrales para la vida cotidiana: alimentación sana, pesca sostenible, reparaciones caseras y vida indígena en armonía con la selva." },
+      { property: "og:title", content: "Cavunativos — Saberes ancestrales para el día a día" },
+      { property: "og:description", content: "Mensajes diarios desde la selva: alimentación, pesca, reparaciones y sabiduría indígena." },
+      { property: "og:url", content: "/" },
+      { property: "og:image", content: "/og-image.jpg" },
+      { name: "twitter:image", content: "/og-image.jpg" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Cavunativos",
+          description: "Saberes ancestrales y mensajes diarios para una vida simple, sana y conectada con la naturaleza.",
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+58-412-6893075",
+            contactType: "customer service",
+          },
+        }),
+      },
+    ],
+  }),
 });
 
 const WHATSAPP = "584126893075";
@@ -74,12 +102,12 @@ const CATEGORIES = [
 ];
 
 const SOCIALS = [
-  { icon: Facebook, name: "Facebook", href: "#" },
-  { icon: Instagram, name: "Instagram", href: "#" },
-  { icon: Youtube, name: "YouTube", href: "#" },
-  { icon: MessageCircle, name: "TikTok", href: "#" },
+  { icon: Facebook, name: "Facebook", href: "https://facebook.com/cavunativos" },
+  { icon: Instagram, name: "Instagram", href: "https://instagram.com/cavunativos" },
+  { icon: Youtube, name: "YouTube", href: "https://youtube.com/@cavunativos" },
+  { icon: MessageCircle, name: "TikTok", href: "https://tiktok.com/@cavunativos" },
   { icon: MessageCircle, name: "WhatsApp", href: WA_LINK },
-  { icon: Send, name: "Telegram", href: "#" },
+  { icon: Send, name: "Telegram", href: "https://t.me/cavunativos" },
 ];
 
 type DbMensaje = {
