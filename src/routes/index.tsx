@@ -28,12 +28,22 @@ const NAV = [
   { href: "#contacto", label: "Contacto" },
 ];
 
-const MESSAGES = [
+type CardMessage = {
+  img: string;
+  cat: string;
+  title: string;
+  excerpt: string;
+  full: string;
+  date: string;
+};
+
+const MESSAGES: CardMessage[] = [
   {
     img: cardFood,
     cat: "Alimentación",
     title: "El desayuno de la selva",
     excerpt: "Plátano maduro asado, casabe y miel silvestre. Energía limpia para empezar el día.",
+    full: "En la selva el desayuno es sagrado. Un plátano maduro asado sobre brasas, una lasca de casabe crujiente y una cucharada de miel silvestre bastan para abrir el día con energía limpia. Sin azúcar refinada, sin prisa, masticando despacio para escuchar al cuerpo. Así comían los abuelos y así sigue siendo el ritual de quienes viven cerca del río.",
     date: "Hoy",
   },
   {
@@ -41,6 +51,7 @@ const MESSAGES = [
     cat: "Pesca",
     title: "Pescar con la luna",
     excerpt: "Los abuelos enseñan que la luna nueva trae los mejores peces al río.",
+    full: "La luna manda en el agua. En luna nueva los peces se acercan a la orilla buscando alimento y la pesca es generosa. En luna llena, en cambio, conviene esperar al amanecer. No es superstición: es observación de generaciones. Pescar es leer el cielo, el viento y la corriente — no solo lanzar el anzuelo.",
     date: "Ayer",
   },
   {
@@ -48,6 +59,7 @@ const MESSAGES = [
     cat: "Saberes",
     title: "Reparar antes que comprar",
     excerpt: "Un cuchillo bien afilado dura tres generaciones. Aquí mi método casero.",
+    full: "Antes de pensar en comprar uno nuevo, afila. Una piedra plana mojada, movimientos suaves y constantes en un solo sentido, y cinco minutos de paciencia. El filo vuelve. Un buen cuchillo bien cuidado pasa de abuelo a nieto. Reparar es también un acto de respeto a la tierra: menos basura, menos consumo, más oficio.",
     date: "Hace 2 días",
   },
 ];
