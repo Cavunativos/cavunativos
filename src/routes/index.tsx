@@ -223,7 +223,11 @@ function Index() {
           </div>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {messages.map((m) => (
-              <article key={m.title} className="group overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1">
+              <button
+                key={m.title}
+                onClick={() => setSelected(m)}
+                className="group text-left overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1"
+              >
                 <div className="aspect-[4/3] overflow-hidden">
                   <img src={m.img} alt={m.title} loading="lazy" width={800} height={600} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
@@ -234,11 +238,11 @@ function Index() {
                   </div>
                   <h3 className="mt-3 font-display text-xl font-semibold text-foreground">{m.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{m.excerpt}</p>
-                  <a href="#" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
                     Leer más <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
+                  </span>
                 </div>
-              </article>
+              </button>
             ))}
           </div>
         </div>
