@@ -241,9 +241,9 @@ function Index() {
 
       {/* Hero */}
       <section id="inicio" className="relative flex min-h-[100svh] items-center justify-center overflow-hidden pt-20">
-        <img src={heroJungle} alt="Selva al atardecer" width={1920} height={1280} className="absolute inset-0 h-full w-full object-cover" />
+        <img src={heroJungle} alt="Selva al atardecer" width={1920} height={1280} className="absolute inset-0 h-full w-full object-cover animate-hero-zoom" />
         <div className="absolute inset-0 bg-gradient-to-b from-primary/30 via-primary/20 to-background" />
-        <div className="relative mx-auto max-w-4xl px-6 py-20 text-center">
+        <div className="relative mx-auto max-w-4xl px-6 py-20 text-center animate-fade-in">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-white backdrop-blur-md">
             <Leaf className="h-3.5 w-3.5" /> Sabiduría ancestral
           </span>
@@ -264,6 +264,7 @@ function Index() {
             </a>
           </div>
         </div>
+        <LeafDivider className="absolute bottom-0 left-0 right-0 text-background" />
       </section>
 
       {/* Mensajes */}
