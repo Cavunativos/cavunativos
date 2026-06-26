@@ -208,6 +208,7 @@ function MensajeForm({
   const [imagen_url, setImagenUrl] = useState(mensaje?.imagen_url ?? "");
   const [publicado, setPublicado] = useState(mensaje?.publicado ?? true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function save(e: React.FormEvent) {
