@@ -56,6 +56,14 @@ const NAV = [
   { href: "#contacto", label: "Contacto" },
 ];
 
+function LeafDivider({ className = "", flip = false }: { className?: string; flip?: boolean }) {
+  return (
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden className={`block h-12 w-full sm:h-16 ${flip ? "rotate-180" : ""} ${className}`}>
+      <path fill="currentColor" d="M0,40 C240,90 480,0 720,40 C960,80 1200,10 1440,50 L1440,80 L0,80 Z" />
+    </svg>
+  );
+}
+
 type CardMessage = {
   img: string;
   cat: string;
@@ -241,9 +249,9 @@ function Index() {
 
       {/* Hero */}
       <section id="inicio" className="relative flex min-h-[100svh] items-center justify-center overflow-hidden pt-20">
-        <img src={heroJungle} alt="Selva al atardecer" width={1920} height={1280} className="absolute inset-0 h-full w-full object-cover" />
+        <img src={heroJungle} alt="Selva al atardecer" width={1920} height={1280} className="absolute inset-0 h-full w-full object-cover animate-hero-zoom" />
         <div className="absolute inset-0 bg-gradient-to-b from-primary/30 via-primary/20 to-background" />
-        <div className="relative mx-auto max-w-4xl px-6 py-20 text-center">
+        <div className="relative mx-auto max-w-4xl px-6 py-20 text-center animate-fade-in">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-white backdrop-blur-md">
             <Leaf className="h-3.5 w-3.5" /> Sabiduría ancestral
           </span>
@@ -264,12 +272,13 @@ function Index() {
             </a>
           </div>
         </div>
+        <LeafDivider className="absolute bottom-0 left-0 right-0 text-background" />
       </section>
 
       {/* Mensajes */}
       <section id="mensajes" className="relative py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-14 max-w-2xl">
+          <div className="mb-14 max-w-2xl reveal">
             <span className="text-xs font-semibold uppercase tracking-widest text-leaf">Mensajes diarios</span>
             <h2 className="mt-3 font-display text-4xl font-semibold text-primary sm:text-5xl">
               Reflexiones del río y la selva
@@ -332,6 +341,7 @@ function Index() {
         </div>
       </section>
 
+      <LeafDivider className="text-leaf/10 -mt-4" />
       {/* Vida práctica */}
       <section id="vida" className="relative overflow-hidden py-24">
         <img src={leavesTexture} alt="" aria-hidden width={1600} height={900} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-15" />
@@ -424,6 +434,7 @@ function Index() {
         </div>
       </section>
 
+      <LeafDivider flip className="text-secondary/40" />
       {/* Patrocinantes + Apoyo */}
       <section className="bg-secondary/40 py-24">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 md:grid-cols-2">
