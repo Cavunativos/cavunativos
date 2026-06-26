@@ -270,14 +270,45 @@ function MensajeForm({
             />
           </div>
           <div>
-            <label className="text-sm text-stone-700">URL de imagen (opcional)</label>
+            <label className="text-sm text-stone-700">Imagen (sube un archivo o pega URL)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setUploading(true);
+                setError(null);
+                const ext = file.name.split(".").pop() || "jpg";
+                const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+                const up = await supabase.storage.from("mensajes").upload(path, file, {
+                  contentType: file.type,
+                  upsert: false,
+                });
+                if (up.error) {
+                  setError(up.error.message);
+                  setUploading(false);
+                  return;
+                }
+                const signed = await supabase.storage
+                  .from("mensajes")
+                  .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+                if (signed.data?.signedUrl) setImagenUrl(signed.data.signedUrl);
+                setUploading(false);
+              }}
+              className="mt-1 w-full text-sm"
+            />
+            {uploading && <p className="text-xs text-stone-500 mt-1">Subiendo…</p>}
             <input
               type="url"
               value={imagen_url}
               onChange={(e) => setImagenUrl(e.target.value)}
-              placeholder="https://…"
-              className="mt-1 w-full px-3 py-2 border border-stone-300 rounded-lg"
+              placeholder="https://… (o queda lleno tras subir)"
+              className="mt-2 w-full px-3 py-2 border border-stone-300 rounded-lg text-sm"
             />
+            {imagen_url && (
+              <img src={imagen_url} alt="preview" className="mt-2 h-24 rounded-lg object-cover" />
+            )}
           </div>
           <label className="flex items-center gap-2 text-sm">
             <input
