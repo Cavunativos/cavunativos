@@ -341,6 +341,7 @@ function Index() {
         </div>
       </section>
 
+      <LeafDivider className="text-leaf/10 -mt-4" />
       {/* Vida práctica */}
       <section id="vida" className="relative overflow-hidden py-24">
         <img src={leavesTexture} alt="" aria-hidden width={1600} height={900} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-15" />
