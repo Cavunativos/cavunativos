@@ -278,8 +278,35 @@ function Index() {
               Cada día un pensamiento, una receta o una técnica. Pequeñas semillas para una vida más simple.
             </p>
           </div>
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar mensaje..."
+              className="w-full rounded-full border border-border bg-card px-5 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 sm:max-w-xs"
+            />
+            <div className="flex flex-wrap gap-2">
+              {cats.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setActiveCat(c)}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
+                    activeCat === c
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {messages.map((m) => (
+            {filtered.length === 0 && (
+              <p className="col-span-full text-center text-muted-foreground">Sin resultados.</p>
+            )}
+            {filtered.map((m) => (
               <button
                 key={m.title}
                 onClick={() => setSelected(m)}
