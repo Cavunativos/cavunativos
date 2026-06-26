@@ -434,6 +434,7 @@ function Index() {
         </div>
       </section>
 
+      <LeafDivider flip className="text-secondary/40" />
       {/* Patrocinantes + Apoyo */}
       <section className="bg-secondary/40 py-24">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 md:grid-cols-2">
