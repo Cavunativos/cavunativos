@@ -56,6 +56,14 @@ const NAV = [
   { href: "#contacto", label: "Contacto" },
 ];
 
+function LeafDivider({ className = "", flip = false }: { className?: string; flip?: boolean }) {
+  return (
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden className={`block h-12 w-full sm:h-16 ${flip ? "rotate-180" : ""} ${className}`}>
+      <path fill="currentColor" d="M0,40 C240,90 480,0 720,40 C960,80 1200,10 1440,50 L1440,80 L0,80 Z" />
+    </svg>
+  );
+}
+
 type CardMessage = {
   img: string;
   cat: string;
