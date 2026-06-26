@@ -189,6 +189,14 @@ function Index() {
         }))
       : MESSAGES;
 
+  const cats = ["Todos", ...Array.from(new Set(messages.map((m) => m.cat)))];
+  const q = query.trim().toLowerCase();
+  const filtered = messages.filter((m) => {
+    const okCat = activeCat === "Todos" || m.cat === activeCat;
+    const okQ = !q || m.title.toLowerCase().includes(q) || m.excerpt.toLowerCase().includes(q) || m.full.toLowerCase().includes(q);
+    return okCat && okQ;
+  });
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
