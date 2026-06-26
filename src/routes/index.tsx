@@ -136,6 +136,8 @@ function Index() {
   const [selected, setSelected] = useState<CardMessage | null>(null);
   const [subEmail, setSubEmail] = useState("");
   const [subState, setSubState] = useState<"idle" | "loading" | "ok" | "dup" | "err">("idle");
+  const [query, setQuery] = useState("");
+  const [activeCat, setActiveCat] = useState<string>("Todos");
 
   async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
@@ -186,6 +188,14 @@ function Index() {
           date: formatDate(m.created_at),
         }))
       : MESSAGES;
+
+  const cats = ["Todos", ...Array.from(new Set(messages.map((m) => m.cat)))];
+  const q = query.trim().toLowerCase();
+  const filtered = messages.filter((m) => {
+    const okCat = activeCat === "Todos" || m.cat === activeCat;
+    const okQ = !q || m.title.toLowerCase().includes(q) || m.excerpt.toLowerCase().includes(q) || m.full.toLowerCase().includes(q);
+    return okCat && okQ;
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -268,8 +278,35 @@ function Index() {
               Cada día un pensamiento, una receta o una técnica. Pequeñas semillas para una vida más simple.
             </p>
           </div>
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar mensaje..."
+              className="w-full rounded-full border border-border bg-card px-5 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 sm:max-w-xs"
+            />
+            <div className="flex flex-wrap gap-2">
+              {cats.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setActiveCat(c)}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
+                    activeCat === c
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {messages.map((m) => (
+            {filtered.length === 0 && (
+              <p className="col-span-full text-center text-muted-foreground">Sin resultados.</p>
+            )}
+            {filtered.map((m) => (
               <button
                 key={m.title}
                 onClick={() => setSelected(m)}
