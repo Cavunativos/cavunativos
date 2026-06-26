@@ -278,7 +278,7 @@ function Index() {
       {/* Mensajes */}
       <section id="mensajes" className="relative py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-14 max-w-2xl">
+          <div className="mb-14 max-w-2xl reveal">
             <span className="text-xs font-semibold uppercase tracking-widest text-leaf">Mensajes diarios</span>
             <h2 className="mt-3 font-display text-4xl font-semibold text-primary sm:text-5xl">
               Reflexiones del río y la selva
