@@ -136,6 +136,8 @@ function Index() {
   const [selected, setSelected] = useState<CardMessage | null>(null);
   const [subEmail, setSubEmail] = useState("");
   const [subState, setSubState] = useState<"idle" | "loading" | "ok" | "dup" | "err">("idle");
+  const [query, setQuery] = useState("");
+  const [activeCat, setActiveCat] = useState<string>("Todos");
 
   async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
