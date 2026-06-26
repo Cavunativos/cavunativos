@@ -105,3 +105,19 @@
     letter-spacing: -0.01em;
   }
 }
+
+@keyframes hero-zoom {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+.animate-hero-zoom {
+  animation: hero-zoom 12s ease-out forwards;
+}
+
+@keyframes float-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  animation: float-up 0.8s ease-out both;
+}
