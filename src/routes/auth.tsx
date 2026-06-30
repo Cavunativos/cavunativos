@@ -4,12 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Leaf } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
+  ssr: false,
   component: AuthPage,
 });
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,20 +26,11 @@ function AuthPage() {
     setLoading(true);
     setError(null);
     try {
-      if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
-        });
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
       navigate({ to: "/admin" });
     } catch (err: any) {
-      setError(err.message ?? "Error");
+      setError("Correo o contraseña incorrectos. Usa la cuenta admin autorizada.");
     } finally {
       setLoading(false);
     }
@@ -53,10 +44,10 @@ function AuthPage() {
           <span className="font-serif text-xl">Cavunativos</span>
         </Link>
         <h1 className="text-2xl font-serif text-[#2d5016] mb-2">
-          {mode === "login" ? "Iniciar sesión" : "Crear cuenta"}
+          Iniciar sesión
         </h1>
         <p className="text-sm text-stone-600 mb-6">
-          Acceso al panel de administración.
+          Acceso privado al panel de administración.
         </p>
 
         <form onSubmit={onSubmit} className="space-y-4">
@@ -87,18 +78,9 @@ function AuthPage() {
             disabled={loading}
             className="w-full bg-[#2d5016] text-white py-2.5 rounded-lg font-medium hover:bg-[#3d6a1f] transition disabled:opacity-50"
           >
-            {loading ? "..." : mode === "login" ? "Entrar" : "Registrarme"}
+            {loading ? "Entrando…" : "Entrar"}
           </button>
         </form>
-
-        <button
-          onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          className="mt-4 text-sm text-[#2d5016] hover:underline w-full text-center"
-        >
-          {mode === "login"
-            ? "¿No tienes cuenta? Crear una"
-            : "Ya tengo cuenta, iniciar sesión"}
-        </button>
       </div>
     </main>
   );
