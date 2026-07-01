@@ -50,6 +50,7 @@ const WA_LINK = `https://wa.me/${WHATSAPP}`;
 const NAV = [
   { href: "#inicio", label: "Inicio" },
   { href: "#mensajes", label: "Mensajes" },
+  { href: "/saberes", label: "Saberes" },
   { href: "#vida", label: "Vida Práctica" },
   { href: "#pesca", label: "Pesca" },
   { href: "#alimentacion", label: "Alimentación Sana" },
