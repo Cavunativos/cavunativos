@@ -140,6 +140,93 @@ function formatDate(iso: string) {
 
 const DEFAULT_IMAGES = [cardFood, cardFishing, cardCrafts];
 
+function ContactForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
+
+  const validate = () => {
+    const next: typeof errors = {};
+    const n = name.trim();
+    if (!n) next.name = "Escribe tu nombre";
+    else if (n.length > 100) next.name = "Máximo 100 caracteres";
+    const e = email.trim();
+    if (!e) next.email = "Escribe tu correo";
+    else if (e.length > 255 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) next.email = "Correo inválido";
+    const m = message.trim();
+    if (!m) next.message = "Escribe tu mensaje";
+    else if (m.length > 1000) next.message = "Máximo 1000 caracteres";
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+    const text = encodeURIComponent(
+      `Hola Cavunativos,\n\nMi nombre es: ${name.trim()}\nCorreo: ${email.trim()}\n\nMensaje:\n${message.trim()}`
+    );
+    window.open(`https://wa.me/${WHATSAPP}?text=${text}`, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-10 space-y-5">
+      <div>
+        <label htmlFor="contact-name" className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <User className="h-4 w-4" /> Nombre
+        </label>
+        <input
+          id="contact-name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          maxLength={100}
+          className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          placeholder="Tu nombre"
+        />
+        {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name}</p>}
+      </div>
+      <div>
+        <label htmlFor="contact-email" className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <Mail className="h-4 w-4" /> Correo
+        </label>
+        <input
+          id="contact-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          maxLength={255}
+          className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          placeholder="tu@correo.com"
+        />
+        {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email}</p>}
+      </div>
+      <div>
+        <label htmlFor="contact-message" className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <MessageCircle className="h-4 w-4" /> Mensaje
+        </label>
+        <textarea
+          id="contact-message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          maxLength={1000}
+          rows={5}
+          className="mt-1 w-full resize-none rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          placeholder="¿En qué podemos ayudarte?"
+        />
+        {errors.message && <p className="mt-1 text-xs text-destructive">{errors.message}</p>}
+      </div>
+      <button
+        type="submit"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
+      >
+        <Send className="h-4 w-4" /> Enviar por WhatsApp
+      </button>
+    </form>
+  );
+}
+
 function Index() {
   const [open, setOpen] = useState(false);
   const [dbMessages, setDbMessages] = useState<DbMensaje[] | null>(null);
@@ -466,8 +553,19 @@ function Index() {
         </div>
       </section>
 
+      {/* Contacto */}
+      <section id="contacto" className="bg-background py-24">
+        <div className="mx-auto max-w-2xl px-6">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-semibold text-primary sm:text-4xl">Escríbenos</h2>
+            <p className="mt-3 text-muted-foreground">¿Tienes una pregunta o quieres colaborar? Envíanos un mensaje directo.</p>
+          </div>
+          <ContactForm />
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer id="contacto" className="border-t border-border/60 bg-primary text-primary-foreground">
+      <footer className="border-t border-border/60 bg-primary text-primary-foreground">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 md:grid-cols-3">
           <div>
             <div className="flex items-center gap-2">
