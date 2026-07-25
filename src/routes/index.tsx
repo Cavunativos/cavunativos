@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Leaf, Fish, Apple, Hammer, Sprout, Sparkles, MessageCircle,
-  Facebook, Instagram, Youtube, Send, Heart, ArrowRight, Menu, X,
+  Facebook, Instagram, Youtube, Send, Heart, ArrowRight, Menu, X, User, Mail,
 } from "lucide-react";
 import heroJungle from "@/assets/hero-jungle.jpg";
 import leavesTexture from "@/assets/leaves-texture.jpg";
