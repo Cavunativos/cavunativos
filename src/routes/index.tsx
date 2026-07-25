@@ -45,7 +45,8 @@ export const Route = createFileRoute("/")({
 });
 
 const WHATSAPP = "584126893075";
-const WA_LINK = `https://wa.me/${WHATSAPP}`;
+const WA_TEXT = encodeURIComponent("Hola Cavunativos, me interesa conocer más sobre sus saberes ancestrales y recetas naturales.");
+const WA_LINK = `https://wa.me/${WHATSAPP}?text=${WA_TEXT}`;
 
 const NAV = [
   { href: "#inicio", label: "Inicio" },
