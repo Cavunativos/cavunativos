@@ -145,6 +145,7 @@ function ContactForm() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const validate = () => {
     const next: typeof errors = {};
@@ -164,14 +165,31 @@ function ContactForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    const text = encodeURIComponent(
-      `Hola Cavunativos,\n\nMi nombre es: ${name.trim()}\nCorreo: ${email.trim()}\n\nMensaje:\n${message.trim()}`
-    );
-    window.open(`https://wa.me/${WHATSAPP}?text=${text}`, "_blank", "noopener,noreferrer");
+    setStatus("loading");
+    setTimeout(() => {
+      const text = encodeURIComponent(
+        `Hola Cavunativos,\n\nMi nombre es: ${name.trim()}\nCorreo: ${email.trim()}\n\nMensaje:\n${message.trim()}`
+      );
+      window.open(`https://wa.me/${WHATSAPP}?text=${text}`, "_blank", "noopener,noreferrer");
+      setStatus("success");
+      setName("");
+      setEmail("");
+      setMessage("");
+    }, 800);
   };
 
   return (
     <form onSubmit={handleSubmit} className="mt-10 space-y-5">
+      {status === "success" && (
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          ✅ Mensaje enviado a WhatsApp. Te responderemos pronto.
+        </div>
+      )}
+      {status === "error" && (
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          Ocurrió un error. Inténtalo de nuevo o escríbenos directamente por WhatsApp.
+        </div>
+      )}
       <div>
         <label htmlFor="contact-name" className="flex items-center gap-2 text-sm font-medium text-foreground">
           <User className="h-4 w-4" /> Nombre
@@ -180,9 +198,13 @@ function ContactForm() {
           id="contact-name"
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (errors.name) setErrors((p) => ({ ...p, name: undefined }));
+          }}
           maxLength={100}
-          className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          disabled={status === "loading"}
+          className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
           placeholder="Tu nombre"
         />
         {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name}</p>}
@@ -195,9 +217,13 @@ function ContactForm() {
           id="contact-email"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (errors.email) setErrors((p) => ({ ...p, email: undefined }));
+          }}
           maxLength={255}
-          className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          disabled={status === "loading"}
+          className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
           placeholder="tu@correo.com"
         />
         {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email}</p>}
@@ -209,23 +235,38 @@ function ContactForm() {
         <textarea
           id="contact-message"
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => {
+            setMessage(e.target.value);
+            if (errors.message) setErrors((p) => ({ ...p, message: undefined }));
+          }}
           maxLength={1000}
           rows={5}
-          className="mt-1 w-full resize-none rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          disabled={status === "loading"}
+          className="mt-1 w-full resize-none rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
           placeholder="¿En qué podemos ayudarte?"
         />
         {errors.message && <p className="mt-1 text-xs text-destructive">{errors.message}</p>}
       </div>
       <button
         type="submit"
-        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
+        disabled={status === "loading"}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        <Send className="h-4 w-4" /> Enviar por WhatsApp
+        {status === "loading" ? (
+          <>
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            Enviando…
+          </>
+        ) : (
+          <>
+            <Send className="h-4 w-4" /> Enviar por WhatsApp
+          </>
+        )}
       </button>
     </form>
   );
 }
+
 
 function Index() {
   const [open, setOpen] = useState(false);
