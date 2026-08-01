@@ -198,18 +198,18 @@ function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="mt-10 space-y-5">
       {status === "success" && (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" aria-live="polite" role="status">
           ✅ Mensaje enviado a WhatsApp. Te responderemos pronto.
         </div>
       )}
       {status === "error" && (
-        <div className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive" aria-live="assertive" role="alert">
           Ocurrió un error. Inténtalo de nuevo o escríbenos directamente por WhatsApp.
         </div>
       )}
       <div>
         <label htmlFor="contact-name" className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <User className="h-4 w-4" /> Nombre
+          <User className="h-4 w-4" aria-hidden="true" /> Nombre
         </label>
         <input
           id="contact-name"
@@ -221,14 +221,16 @@ function ContactForm() {
           }}
           maxLength={100}
           disabled={status === "loading"}
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "error-name" : undefined}
           className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
           placeholder="Tu nombre"
         />
-        {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name}</p>}
+        {errors.name && <p id="error-name" className="mt-1 text-xs text-destructive" aria-live="polite">{errors.name}</p>}
       </div>
       <div>
         <label htmlFor="contact-email" className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Mail className="h-4 w-4" /> Correo
+          <Mail className="h-4 w-4" aria-hidden="true" /> Correo
         </label>
         <input
           id="contact-email"
@@ -240,14 +242,16 @@ function ContactForm() {
           }}
           maxLength={255}
           disabled={status === "loading"}
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "error-email" : undefined}
           className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
           placeholder="tu@correo.com"
         />
-        {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email}</p>}
+        {errors.email && <p id="error-email" className="mt-1 text-xs text-destructive" aria-live="polite">{errors.email}</p>}
       </div>
       <div>
         <label htmlFor="contact-message" className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <MessageCircle className="h-4 w-4" /> Mensaje
+          <MessageCircle className="h-4 w-4" aria-hidden="true" /> Mensaje
         </label>
         <textarea
           id="contact-message"
@@ -259,30 +263,33 @@ function ContactForm() {
           maxLength={1000}
           rows={5}
           disabled={status === "loading"}
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? "error-message" : undefined}
           className="mt-1 w-full resize-none rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
           placeholder="¿En qué podemos ayudarte?"
         />
-        {errors.message && <p className="mt-1 text-xs text-destructive">{errors.message}</p>}
+        {errors.message && <p id="error-message" className="mt-1 text-xs text-destructive" aria-live="polite">{errors.message}</p>}
       </div>
       <button
         type="submit"
         disabled={status === "loading"}
+        aria-busy={status === "loading"}
         className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {status === "loading" ? (
           <>
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" aria-hidden="true" />
             Enviando…
           </>
         ) : (
           <>
-            <Send className="h-4 w-4" /> Enviar por WhatsApp
+            <Send className="h-4 w-4" aria-hidden="true" /> Enviar por WhatsApp
           </>
         )}
       </button>
 
       {showFallback && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900" aria-live="polite">
           <p className="mb-2 font-medium">¿No se abrió WhatsApp?</p>
           <p className="mb-3">Escríbenos directamente al número:</p>
           <a
@@ -297,7 +304,7 @@ function ContactForm() {
               onClick={copyMessage}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
             >
-              <Copy className="h-3.5 w-3.5" />
+              <Copy className="h-3.5 w-3.5" aria-hidden="true" />
               {copied ? "¡Copiado!" : "Copiar mensaje"}
             </button>
             <a
@@ -306,7 +313,7 @@ function ContactForm() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/30 px-4 py-2 text-xs font-semibold text-primary"
             >
-              <MessageCircle className="h-3.5 w-3.5" /> Abrir WhatsApp Web
+              <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" /> Abrir WhatsApp Web
             </a>
           </div>
         </div>
