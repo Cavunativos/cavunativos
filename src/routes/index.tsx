@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Leaf, Fish, Apple, Hammer, Sprout, Sparkles, MessageCircle,
-  Facebook, Instagram, Youtube, Send, Heart, ArrowRight, Menu, X, User, Mail,
+  Facebook, Instagram, Youtube, Send, Heart, ArrowRight, Menu, X, User, Mail, Copy,
 } from "lucide-react";
 import heroJungle from "@/assets/hero-jungle.jpg";
 import leavesTexture from "@/assets/leaves-texture.jpg";
@@ -146,6 +146,8 @@ function ContactForm() {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [showFallback, setShowFallback] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const validate = () => {
     const next: typeof errors = {};
@@ -162,20 +164,35 @@ function ContactForm() {
     return Object.keys(next).length === 0;
   };
 
+  const fallbackText =
+    `Hola Cavunativos,\n\nMi nombre es: ${name.trim()}\nCorreo: ${email.trim()}\n\nMensaje:\n${message.trim()}`;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
     setStatus("loading");
+    setShowFallback(false);
     setTimeout(() => {
-      const text = encodeURIComponent(
-        `Hola Cavunativos,\n\nMi nombre es: ${name.trim()}\nCorreo: ${email.trim()}\n\nMensaje:\n${message.trim()}`
-      );
-      window.open(`https://wa.me/${WHATSAPP}?text=${text}`, "_blank", "noopener,noreferrer");
+      const text = encodeURIComponent(fallbackText);
+      const opened = window.open(`https://wa.me/${WHATSAPP}?text=${text}`, "_blank", "noopener,noreferrer");
+      if (!opened || opened.closed == null) {
+        setShowFallback(true);
+      }
       setStatus("success");
       setName("");
       setEmail("");
       setMessage("");
     }, 800);
+  };
+
+  const copyMessage = async () => {
+    try {
+      await navigator.clipboard.writeText(fallbackText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
   };
 
   return (
@@ -263,6 +280,37 @@ function ContactForm() {
           </>
         )}
       </button>
+
+      {showFallback && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
+          <p className="mb-2 font-medium">¿No se abrió WhatsApp?</p>
+          <p className="mb-3">Escríbenos directamente al número:</p>
+          <a
+            href={`tel:+58-412-6893075`}
+            className="mb-3 inline-block text-lg font-semibold text-primary underline"
+          >
+            +58 412-6893075
+          </a>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <button
+              type="button"
+              onClick={copyMessage}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+            >
+              <Copy className="h-3.5 w-3.5" />
+              {copied ? "¡Copiado!" : "Copiar mensaje"}
+            </button>
+            <a
+              href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(fallbackText)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/30 px-4 py-2 text-xs font-semibold text-primary"
+            >
+              <MessageCircle className="h-3.5 w-3.5" /> Abrir WhatsApp Web
+            </a>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
